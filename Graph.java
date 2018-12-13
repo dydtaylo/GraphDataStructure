@@ -35,7 +35,7 @@ public class Graph extends HashMap<Integer, List<DistanceTo>> {
 		
 		Graph g;
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-		int numVertices = 5;
+		int numVertices = 50;
 		int connectionChances = numVertices/2;
 		int connectionProbability = 50;
 		int nextConnectionId = -1;
@@ -101,14 +101,15 @@ public class Graph extends HashMap<Integer, List<DistanceTo>> {
 		queue.add(new DistanceTo(origin, 0));
 		DistanceTo current;
 		ArrayList<DistanceTo> neighbors;
-		while(!allTrue(visited)) {
+		while(!queue.isEmpty()) {
 			current = queue.poll();
 			visited[current.getTarget()] = true;
 			neighbors = new ArrayList<DistanceTo>(this.get(current.getTarget()));
-			for(int i = 0; i < neighbors.size(); i++) {
-				distances[neighbors.get(i).getTarget()] = Math.min(neighbors.get(i).getDistance() + distances[current.getTarget()], distances[neighbors.get(i).getTarget()]);
-				if(!visited[neighbors.get(i).getTarget()])
-					queue.add(neighbors.get(i));
+			for(DistanceTo n: neighbors) {
+				if(!visited[n.getTarget()]) {
+					distances[n.getTarget()] = Math.min(distances[current.getTarget()] + n.getDistance(), distances[n.getTarget()]);
+					queue.add(n);
+				}
 			}
 		}
 	}
@@ -369,6 +370,6 @@ class DistanceTo implements Comparable<DistanceTo>{
 	}
 	
 	public String toString() {
-		return distance + " units from " + target;
+		return distance + " units from " + target + "\n";
 	}
 }
